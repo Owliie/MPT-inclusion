@@ -17,6 +17,7 @@
   "scripts": {
     "circom:dev": "hardhat circom --deterministic --debug --verbose",
     "circom:prod": "hardhat circom --verbose",
-    "test": "hardhat test"
+    "test": "hardhat test",
+    "compile": "circom circuits/MPT-inclusion.circom --r1cs --wasm --sym --c"
   }
 }

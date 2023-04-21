@@ -4,7 +4,7 @@
 const hre = require("hardhat");
 const { assert } = require("chai");
 
-describe.only("MPT_Inclusion circuit", () => {
+describe.only("MPT-Inclusion circuit", () => {
   let circuit;
 
   const mimcKey = 0;
@@ -21,7 +21,7 @@ describe.only("MPT_Inclusion circuit", () => {
   const sanityCheck = true;
 
   before(async () => {
-    circuit = await hre.circuitTest.setup("MPT_inclusion");
+    circuit = await hre.circuitTest.setup("MPT-inclusion", { debug: true });
   });
 
   it("produces a witness with valid constraints", async () => {

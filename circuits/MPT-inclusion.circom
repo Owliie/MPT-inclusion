@@ -1,7 +1,7 @@
 pragma circom 2.0.3;
 
 include "../node_modules/circomlib/circuits/bitify.circom";
-include "./MPT_root.circom";
+include "./MPT-root.circom";
 
 template LeafInclusion(depth) {
   signal input leafValue;

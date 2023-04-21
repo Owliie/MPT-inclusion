@@ -50,8 +50,7 @@ template XorArray(n) {
         aux[i].b <== b[i];
     }
     for (i=0; i<n; i++) {
-        // out[i] <== aux[i].out;
-        out[i] <== a[i];
+        out[i] <== aux[i].out;
     }
 }
 
