@@ -7,11 +7,13 @@ artifacts
 
 # Ignore the output from circom because we want people to build these
 # Users can remove these lines and commit the artifacts
-circuits/*.r1cs
-circuits/*.sym
-circuits/*.vkey.json
-circuits/*.wasm
-circuits/*.zkey
+**/*.r1cs
+**/*.sym
+**/*.vkey.json
+**/*.wasm
+**/*.zkey
 contracts/*.sol
 *_cpp/
 *_js/
+
+.DS_Store

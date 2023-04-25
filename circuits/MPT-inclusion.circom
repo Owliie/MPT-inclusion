@@ -6,7 +6,7 @@ include "./MPT-root.circom";
 template LeafInclusion(depth) {
   signal input leafValue;
   signal input leafIndex;
-  // root hash split into 2x128 bits value
+
   signal input rootHalf1;
   signal input rootHalf2;
 
@@ -25,16 +25,26 @@ template LeafInclusion(depth) {
     calcRootMPT.isRight[i] <== isRight[i];
   }
 
-  component rootHalf1Bits = Num2Bits(128);
-  rootHalf1Bits.in <== rootHalf1;
+  component binaryRootHalf1 = Num2Bits(128);
+  binaryRootHalf1.in <== rootHalf1;
 
-  component rootHalf2Bits = Num2Bits(128);
-  rootHalf2Bits.in <== rootHalf2;
+  component binaryRootHalf2 = Num2Bits(128);
+  binaryRootHalf2.in <== rootHalf2;
 
-  for (var i = 0; i < 128; i++) {
-    rootHalf1Bits.out[i] === calcRootMPT.root[i];
-    rootHalf2Bits.out[i] === calcRootMPT.root[i + 128];
+  var binaryRoot[256];
+  for (var j = 0; j < 256; j++) {
+    if(j < 128) {
+      binaryRoot[j] = binaryRootHalf1.out[127 - j];
+    } else {
+      binaryRoot[j] = binaryRootHalf2.out[255 - j];
+    }
+  }
+
+  // bytes
+  for (var i = 0; i < 256 / 8; i++) {
+    // bits
+    for (var j = 0; j < 8; j++) {
+      binaryRoot[8*i + j] === calcRootMPT.root[8*i + (7-j)];
+    }
   }
 }
-
-component main {public [leafValue, leafIndex, rootHalf1, rootHalf2]} = LeafInclusion(2);

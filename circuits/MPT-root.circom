@@ -15,14 +15,23 @@ template CalcRootMPT(depth) {
 
   component tree_root[depth+1];
   tree_root[0] = Keccak(256, 256);
-  // component rootA = Keccak(256, 256);
 
+  log("leaf", leaf);
   component leafBits = Num2Bits(256);
   leafBits.in <== leaf;
 
-  for (var i = 0; i < 256; i++) {
-    tree_root[0].in[i] <== leafBits.out[i];
-    // rootA.in[i] <== 1;
+  var reversedLeafBits[256];
+
+  for(var i = 255; i >= 0; i--){
+    reversedLeafBits[255-i] = leafBits.out[i];
+  }
+
+  // bytes
+  for (var i = 0; i < 256 / 8; i++) {
+    // bits
+    for (var j = 0; j < 8; j++) {
+      tree_root[0].in[8*i + (7-j)] <== reversedLeafBits[8*i + j];
+    }
   }
 
   component binaryPathHalf1[depth];
@@ -40,16 +49,20 @@ template CalcRootMPT(depth) {
     var binaryPath[256];
     for (var j = 0; j < 256; j++) {
       if(j < 128) {
-        binaryPath[j] = binaryPathHalf1[i-1].out[j];
+        binaryPath[j] = binaryPathHalf1[i-1].out[127 - j];
       } else {
-        binaryPath[j] = binaryPathHalf2[i-1].out[j-128];
+        binaryPath[j] = binaryPathHalf2[i-1].out[255 - j];
       }
     }
 
     tree_root[i] = Keccak(512, 256);
-    for (var j = 0; j < 256; j++) {
-      tree_root[i].in[j] <== binaryPath[j] - isRight[i-1] * (binaryPath[j] - tree_root[i-1].out[j]);
-      tree_root[i].in[j+256] <== tree_root[i-1].out[j] - isRight[i-1] * (tree_root[i-1].out[j] - binaryPath[j]);
+    // bytes
+    for (var k = 0; k < 256 / 8; k++) {
+      // bits
+      for (var j = 0; j < 8; j++) {
+        tree_root[i].in[8*k + j] <== binaryPath[8*k + (7-j)] - isRight[i-1] * (binaryPath[8*k + (7-j)] - tree_root[i-1].out[8*k + j]);
+        tree_root[i].in[8*k + j + 256] <== tree_root[i-1].out[8*k + j] - isRight[i-1] * (tree_root[i-1].out[8*k + j] - binaryPath[8*k + (7-j)]);
+      }
     }
   }
 
