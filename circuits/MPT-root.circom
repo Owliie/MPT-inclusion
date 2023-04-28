@@ -1,14 +1,14 @@
 pragma circom 2.0.3;
 
-include "./vocdoni-keccak256/keccak.circom";
 include "../node_modules/circomlib/circuits/bitify.circom";
+include "./vocdoni-keccak256/keccak.circom";
+include "./utils.circom";
 
 template CalcRootMPT(depth) {
   signal input leaf;
+  signal input leafIndex;
   signal input pathHalf1[depth];
   signal input pathHalf2[depth];
-
-  signal input isRight[depth];
 
   // root is 256 bits array
   signal output root[256];
@@ -16,7 +16,6 @@ template CalcRootMPT(depth) {
   component tree_root[depth+1];
   tree_root[0] = Keccak(256, 256);
 
-  log("leaf", leaf);
   component leafBits = Num2Bits(256);
   leafBits.in <== leaf;
 
@@ -27,7 +26,7 @@ template CalcRootMPT(depth) {
   }
 
   // bytes
-  for (var i = 0; i < 256 / 8; i++) {
+  for (var i = 0; i < 32; i++) {
     // bits
     for (var j = 0; j < 8; j++) {
       tree_root[0].in[8*i + (7-j)] <== reversedLeafBits[8*i + j];
@@ -37,9 +36,11 @@ template CalcRootMPT(depth) {
   component binaryPathHalf1[depth];
   component binaryPathHalf2[depth];
 
-  for (var i = 1; i <= depth; i++) {
-    isRight[i-1] * (isRight[i-1] - 1) === 0;
+  component remainder[depth];
 
+  var index = leafIndex;
+
+  for (var i = 1; i <= depth; i++) {
     binaryPathHalf1[i-1] = Num2Bits(128);
     binaryPathHalf1[i-1].in <== pathHalf1[i-1];
 
@@ -56,14 +57,20 @@ template CalcRootMPT(depth) {
     }
 
     tree_root[i] = Keccak(512, 256);
+
+    remainder[i-1] = isOdd();
+    remainder[i-1].in <== index;
+
     // bytes
-    for (var k = 0; k < 256 / 8; k++) {
+    for (var k = 0; k < 32; k++) {
       // bits
       for (var j = 0; j < 8; j++) {
-        tree_root[i].in[8*k + j] <== binaryPath[8*k + (7-j)] - isRight[i-1] * (binaryPath[8*k + (7-j)] - tree_root[i-1].out[8*k + j]);
-        tree_root[i].in[8*k + j + 256] <== tree_root[i-1].out[8*k + j] - isRight[i-1] * (tree_root[i-1].out[8*k + j] - binaryPath[8*k + (7-j)]);
+        tree_root[i].in[8*k + j] <== tree_root[i-1].out[8*k + j] - (remainder[i-1].out) * (tree_root[i-1].out[8*k + j] - binaryPath[8*k + (7-j)]);
+        tree_root[i].in[8*k + j + 256] <== binaryPath[8*k + (7-j)] - (remainder[i-1].out) * (binaryPath[8*k + (7-j)] - tree_root[i-1].out[8*k + j]);
       }
     }
+
+    index = (index - remainder[i-1].out) / 2;
   }
 
   for (var i = 0; i < 256; i++) {

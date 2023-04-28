@@ -19,6 +19,7 @@
     "circom:dev": "hardhat circom --deterministic --debug --verbose",
     "circom:prod": "hardhat circom --verbose",
     "test": "hardhat test",
-    "compile": "circom circuits/MPT-inclusion.circom --r1cs --wasm --sym --c"
+    "compile1": "circom2 circuits/MPT1.circom --r1cs --wasm --sym --c",
+    "compile2": "circom2 circuits/MPT2.circom --r1cs --wasm --sym --c"
   }
 }

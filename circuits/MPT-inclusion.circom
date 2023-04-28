@@ -13,16 +13,14 @@ template LeafInclusion(depth) {
   // private
   signal input pathHalf1[depth];
   signal input pathHalf2[depth];
-  // isRight's elements are 0 for left and 1 for right sibling
-  signal input isRight[depth];
 
   component calcRootMPT = CalcRootMPT(depth);
   calcRootMPT.leaf <== leafValue;
+  calcRootMPT.leafIndex <== leafIndex;
 
   for (var i = 0; i < depth; i++) {
     calcRootMPT.pathHalf1[i] <== pathHalf1[i];
     calcRootMPT.pathHalf2[i] <== pathHalf2[i];
-    calcRootMPT.isRight[i] <== isRight[i];
   }
 
   component binaryRootHalf1 = Num2Bits(128);
@@ -41,7 +39,7 @@ template LeafInclusion(depth) {
   }
 
   // bytes
-  for (var i = 0; i < 256 / 8; i++) {
+  for (var i = 0; i < 32; i++) {
     // bits
     for (var j = 0; j < 8; j++) {
       binaryRoot[8*i + j] === calcRootMPT.root[8*i + (7-j)];
