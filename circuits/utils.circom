@@ -4,6 +4,6 @@ template isOdd() {
     signal input in;
     signal output out;
 
-    out <-- (in >> 0) & 1;
+    out <-- in%2;
     out * (out - 1) === 0;
 }
