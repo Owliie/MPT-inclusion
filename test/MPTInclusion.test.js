@@ -16,7 +16,7 @@ describe("MPT-Inclusion circuit", () => {
     return ethers.BigNumber.from('0x' + hex).toString()
   }
 
-  const prepareHashesDepth1 = async () => {
+  const prepareHashesDepth1 = () => {
     const leaf1 = ethers.utils.solidityKeccak256(['uint256'], [sampleInput.leafValue])
     const leaf2 = ethers.utils.solidityKeccak256(['uint256'], [2])
 
@@ -36,7 +36,7 @@ describe("MPT-Inclusion circuit", () => {
     sampleInput.rootHalf2 = hexToNumber(root.replace('0x', '').slice(32, 64))
   }
 
-  const prepareHashesDepth2 = async (leaf2Value, siblingValue) => {
+  const prepareHashesDepth2 = (leaf2Value, siblingValue) => {
     const leaf1 = ethers.utils.solidityKeccak256(['uint256'], [sampleInput.leafValue])
     const leaf2 = ethers.utils.solidityKeccak256(['uint256'], [leaf2Value])
 
@@ -68,7 +68,7 @@ describe("MPT-Inclusion circuit", () => {
     sampleInput.rootHalf2 = hexToNumber(root.replace('0x', '').slice(32, 64))
   }
 
-  const prepareHashesDepth3 = async (leaf2Value, siblingValue1, siblingValue2) => {
+  const prepareHashesDepth3 = (leaf2Value, siblingValue1, siblingValue2) => {
     const leaf1 = ethers.utils.solidityKeccak256(['uint256'], [sampleInput.leafValue])
     const leaf2 = ethers.utils.solidityKeccak256(['uint256'], [leaf2Value])
 
@@ -112,7 +112,7 @@ describe("MPT-Inclusion circuit", () => {
   it("produces a witness with valid constraints for depth 1", async () => {
     const circuit = await makeCircuit('MPT1')
 
-    await prepareHashesDepth1()
+    prepareHashesDepth1()
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   });
@@ -120,7 +120,7 @@ describe("MPT-Inclusion circuit", () => {
   it("produces a witness with valid constraints for depth 2 for index 0", async () => {
     const circuit = await makeCircuit('MPT2')
 
-    await prepareHashesDepth2(2, 3)
+    prepareHashesDepth2(2, 3)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   });
@@ -128,7 +128,7 @@ describe("MPT-Inclusion circuit", () => {
   it("produces a witness with invalid constraints for depth 2", async () => {
     const circuit = await makeCircuit('MPT2')
 
-    await prepareHashesDepth2(2, 3)
+    prepareHashesDepth2(2, 3)
     sampleInput.leafValue = 10
     const promise = circuit.calculateWitness(sampleInput, true);
     const res = await Promise.allSettled([promise])
@@ -140,7 +140,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 1
-    await prepareHashesDepth2(2, 3)
+    prepareHashesDepth2(2, 3)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   });
@@ -150,7 +150,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 2
-    await prepareHashesDepth2(2, 3)
+    prepareHashesDepth2(2, 3)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   });
@@ -160,7 +160,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 3
-    await prepareHashesDepth2(2, 3)
+    prepareHashesDepth2(2, 3)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   });
@@ -170,7 +170,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 0
-    await prepareHashesDepth3(2, 3, 4)
+    prepareHashesDepth3(2, 3, 4)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   })
@@ -180,7 +180,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 1
-    await prepareHashesDepth3(2, 3, 4)
+    prepareHashesDepth3(2, 3, 4)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   })
@@ -190,7 +190,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 2
-    await prepareHashesDepth3(2, 3, 4)
+    prepareHashesDepth3(2, 3, 4)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   })
@@ -200,7 +200,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 3
-    await prepareHashesDepth3(2, 3, 4)
+    prepareHashesDepth3(2, 3, 4)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   })
@@ -210,7 +210,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 4
-    await prepareHashesDepth3(2, 3, 4)
+    prepareHashesDepth3(2, 3, 4)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   })
@@ -220,7 +220,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 5
-    await prepareHashesDepth3(2, 3, 4)
+    prepareHashesDepth3(2, 3, 4)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   })
@@ -230,7 +230,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 6
-    await prepareHashesDepth3(2, 3, 4)
+    prepareHashesDepth3(2, 3, 4)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   })
@@ -240,7 +240,7 @@ describe("MPT-Inclusion circuit", () => {
 
     sampleInput.leafValue = 10
     sampleInput.leafIndex = 7
-    await prepareHashesDepth3(2, 3, 4)
+    prepareHashesDepth3(2, 3, 4)
     const witness = await circuit.calculateWitness(sampleInput, true);
     await circuit.checkConstraints(witness);
   })

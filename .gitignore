@@ -5,14 +5,11 @@ node_modules/
 cache
 artifacts
 
-# Ignore the output from circom because we want people to build these
-# Users can remove these lines and commit the artifacts
 **/*.r1cs
 **/*.sym
 **/*.vkey.json
 **/*.wasm
 **/*.zkey
-contracts/*.sol
 *_cpp/
 *_js/
 

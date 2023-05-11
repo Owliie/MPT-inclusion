@@ -9,21 +9,23 @@ module.exports = {
       {
         version: "0.8.17",
       },
+      {
+        version: "0.6.11",
+      }
     ],
   },
+  // the code below is not used due to issues with hardhat-circom v2 compiler and is left for reference
   circom: {
     inputBasePath: "./circuits",
-    // ptau: "https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final.ptau",
-    ptau: "powersOfTau28_hez_final_19.ptau",
+    ptau: "../artifacts/circom/powersOfTau28_hez_final_19.ptau",
     circuits: [
       {
-        name: "MPT-inclusion",
+        name: "MPT1",
         protocol: "plonk",
-        version: 2,
-        circuit: "MPT-inclusion.circom",
-        input: "MPT-inclusion.json",
+        version: 1,
+        circuit: "MPT1.circom",
+        input: "MPT1.json",
         wasm: "../artifacts/circom/MPT-inclusion.wasm",
-        // zkey: "MPT-inclusion.zkey",
       },
     ],
   },
