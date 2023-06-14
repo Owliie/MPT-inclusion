@@ -3,14 +3,18 @@ const ethers = require("ethers");
 const { makeCircuit } = require('./utils/prepare.js')
 
 describe("MPT-Inclusion circuit", () => {
-  const sampleInput = {
-    leafValue: 1,
-    leafIndex: 0,
-    rootHalf1: "",
-    rootHalf2: "",
-    pathHalf1: [],
-    pathHalf2: [],
-  };
+  let sampleInput
+
+  beforeEach(() => {
+    sampleInput = {
+      leafValue: 1,
+      leafIndex: 0,
+      rootHalf1: "",
+      rootHalf2: "",
+      pathHalf1: [],
+      pathHalf2: [],
+    };
+  })
 
   const hexToNumber = (hex) => {
     return ethers.BigNumber.from('0x' + hex).toString()
